@@ -6,7 +6,7 @@ Harf harf beliren logo + altında genişleyen kor renginde bir çizgi.
 Animasyon bitince `finished` sinyali yayınlanır.
 """
 
-from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout
+from PyQt5.QtWidgets import QWidget, QLabel, QVBoxLayout, QApplication
 from PyQt5.QtCore import Qt, QTimer, pyqtSignal, QPropertyAnimation, QEasingCurve, QRectF
 from PyQt5.QtGui import QPainter, QColor, QFont
 
@@ -83,6 +83,34 @@ class SplashScreen(QWidget):
         self._exit_timer = QTimer(self)
         self._exit_timer.setSingleShot(True)
         self._exit_timer.timeout.connect(self.finished.emit)
+
+    def show_kiosk(self):
+        """Ana penceredeki (main_window.show_kiosk) ile aynı mantık: dock/panel
+        strut'unu görmezden gelip ekranın gerçek boyutuna oturt."""
+        if config.DEBUG_MODE:
+            self.setFixedSize(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
+            self.show()
+            return
+        screen = QApplication.primaryScreen()
+        geo = screen.geometry()
+        self.setWindowFlags(
+            Qt.FramelessWindowHint
+            | Qt.X11BypassWindowManagerHint
+            | Qt.WindowStaysOnTopHint
+        )
+        self.setGeometry(geo)
+        self.showFullScreen()
+        self.raise_()
+        self.activateWindow()
+        self.grabKeyboard()
+
+    def close(self):
+        if not config.DEBUG_MODE:
+            try:
+                self.releaseKeyboard()
+            except Exception:
+                pass
+        return super().close()
 
     def start(self):
         type_duration = int(config.SPLASH_DURATION_MS * 0.45)

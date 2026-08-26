@@ -40,24 +40,26 @@ def main():
     load_stylesheet(app)
 
     window = MainWindow()
-
     splash = SplashScreen()
+
+    # Splash'ten ana ekrana geçerken kısa süreliğine masaüstünün görünmesinin
+    # sebebi, splash kapanıp ana pencere gerçekten ekrana "map" edilene kadar
+    # geçen küçük boşluk. Bunu önlemek için ana pencereyi EN BAŞTA, splash'in
+    # ARKASINDA tam ekran olarak gösteriyoruz; splash kapandığında ana pencere
+    # zaten oradadır, araya hiçbir boşluk girmez.
+    window.show_kiosk()
+    splash.show_kiosk()
 
     def go_to_main():
         splash.close()
-        if config.DEBUG_MODE:
-            window.show()
-        else:
-            window.showFullScreen()
+        window.activateWindow()
+        window.raise_()
+        if not config.DEBUG_MODE:
+            # Splash klavye grab'ini bıraktı; ESC'nin kesintisiz çalışması
+            # için grab'i ana pencereye geri veriyoruz.
+            window.grabKeyboard()
 
     splash.finished.connect(go_to_main)
-
-    if config.DEBUG_MODE:
-        splash.setFixedSize(config.SCREEN_WIDTH, config.SCREEN_HEIGHT)
-        splash.show()
-    else:
-        splash.showFullScreen()
-
     splash.start()
 
     sys.exit(app.exec_())

@@ -61,6 +61,36 @@ ui/
 styles/theme.qss           Koyu grafit + kor/amber tema
 ```
 
+## Kiosk kurulumu (Ubuntu dock / tam ekran sorunu)
+
+Standart bir Ubuntu masaüstü oturumunda (GNOME/Unity), soldaki dock/launcher
+panel WM'e (pencere yöneticisine) "ekranın şu kadarını bana ayır" diye bir
+alan (strut) bildirir. `showFullScreen()` çoğu zaman bunu görmezden gelemez,
+bu yüzden dock açık kalıyormuş gibi görünür.
+
+**Uygulama bunu artık kendi içinde çözüyor:** `MainWindow.show_kiosk()` ve
+`SplashScreen.show_kiosk()`, pencereyi `X11BypassWindowManagerHint` ile WM'in
+karar mekanizmasının tamamen dışına çıkarıp ekranın gerçek piksel boyutuna
+(`QApplication.primaryScreen().geometry()`) manuel olarak oturtuyor. Ayrıca
+splash artık ana pencerenin **önünde** açılıyor (ana pencere baştan itibaren
+arkada tam ekran hazır bekliyor), böylece splash kapanınca araya masaüstünün
+göründüğü bir boşluk girmiyor.
+
+**Üretim cihazı için asıl önerilen kalıcı çözüm** yine de işletim sistemi
+seviyesinde: Jetson'ı GNOME/Unity yerine dock içermeyen hafif bir ortamla
+(ör. `openbox` veya `matchbox-window-manager`) ya da doğrudan bu uygulamayı
+autostart eden minimal bir X oturumuyla açmak. Bu, gerçek bir fırın ürününde
+standart pratiktir ve dock/panel sorununu kökten ortadan kaldırır:
+
+```bash
+sudo apt install openbox
+# ~/.xinitrc veya autostart betiğine ekleyin:
+python3 /path/to/silverline_oven/main.py &
+openbox-session
+```
+
+Bu şekilde masaüstü ortamı hiç yüklenmez, ekranda sadece uygulama olur.
+
 ## Seri haberleşme protokolü
 
 Basit, satır bazlı (`\n` ile biten) metin protokolü. Kontrol kartı
