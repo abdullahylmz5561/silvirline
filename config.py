@@ -14,14 +14,14 @@ SCREEN_HEIGHT = 480
 # True: pencereli (masaüstünde geliştirme), fare imleci görünür, seri port
 #       bulunamazsa otomatik simülasyon moduna geçer.
 # False: gerçek donanım (Jetson TX2) - tam ekran, imleç gizli, kiosk modu.
-DEBUG_MODE = True
+DEBUG_MODE = False
 
 # --- Seri Haberleşme (fırın kontrol kartı ile) ---
-SERIAL_PORT = "/dev/ttyTHS1"   # Jetson TX2 donanımsal UART. Gerekirse /dev/ttyUSB0 yapın.
+SERIAL_PORT = "/dev/ttyUSB0"   # Jetson TX2 donanımsal UART. Gerekirse /dev/ttyUSB0 yapın.
 SERIAL_BAUDRATE = 115200
 SERIAL_TIMEOUT = 1.0           # saniye
 # Port açılamazsa (kart bağlı değilse) otomatik olarak simülasyon moduna düş.
-SERIAL_AUTO_SIMULATE = True
+SERIAL_AUTO_SIMULATE = False
 
 # --- Sıcaklık sınırları ---
 MIN_TEMP = 50
