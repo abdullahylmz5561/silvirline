@@ -57,7 +57,7 @@ class SplashScreen(QWidget):
         font.setBold(True)
         font.setLetterSpacing(QFont.AbsoluteSpacing, 10)
         self.title.setFont(font)
-        self.title.setStyleSheet("color:#f5f1ea;")
+        self.title.setStyleSheet("color:#e9530e;")
         layout.addWidget(self.title)
 
         self.bar = _UnderlineBar()
